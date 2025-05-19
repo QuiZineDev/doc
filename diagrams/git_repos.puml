@@ -1,0 +1,11 @@
+@startmindmap Diagramme des dépôts Git
+* Github
+** Chaîne de Déploiement
+** Frontend (AngularJS)
+** Backend
+*** Middleware Backend
+*** API Backend (ExpressJS)
+*** API Backend (Go ?)
+** Documentation & Design
+** Infrastructure
+@endmindmap
