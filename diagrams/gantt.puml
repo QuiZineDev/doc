@@ -1,0 +1,15 @@
+@startgantt Diagramme de Gantt
+printscale daily zoom 3
+project starts 2025-05-19
+[Développement Quiz] requires 5 days
+[Soutenance] happens at 2025-05-23
+-- Détail --
+[Expression des Besoins] lasts 1 day
+-- Frontend --
+[Maquette Frontend] lasts 2 days
+[Maquette Frontend] starts at 2025-05-20
+-- Backend --
+[Maquette Backend] lasts 2 days
+[Maquette Backend] starts at 2025-05-20
+-- Infrastructure --
+@endgantt
