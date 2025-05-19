@@ -1,1 +1,4 @@
-# doc
+# Dépôt de documentation de QuiZine
+- Diagramme de Gantt (PlantUML)
+- Diagrammes d'architecture (PlantUML)
+- Descriptifs techniques (LaTeX)
