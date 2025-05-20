@@ -3,7 +3,7 @@ hide circle
 skinparam linetype ortho
 
 entity "user" {
-  + id : INTEGER <<PK>> <<generated>>
+  + id : INTEGER <<PK>>
   --
   username : VARCHAR(255) <<NN>>
   password : VARCHAR(255) <<NN>>
@@ -21,17 +21,17 @@ entity "game_request" {
   + id_requestor : INTEGER <<PK>> <<FK>>
   + id_validator : INTEGER <<PK>> <<FK>>
   --
-  datetime : TIMESTAMP <<NN>> <<UNIQUE>> <<default now()>>
+  datetime : TIMESTAMP <<NN>> <<default now()>>
 }
 
 entity "session" {
-  + id : INTEGER <<PK>> <<generated>>
+  + id : INTEGER <<PK>>
   --
   id_quiz : INTEGER <<NN>> <<FK>>
 }
 
 entity "quiz" {
-  + id : INTEGER <<PK>> <<generated>>
+  + id : INTEGER <<PK>>
   --
   nom : VARCHAR(255) <<NN>>
   picture : BYTEA
@@ -40,14 +40,14 @@ entity "quiz" {
 }
 
 entity "labelisable" {
-  + id : INTEGER <<PK>> <<generated>>
+  + id : INTEGER <<PK>>
 }
 
 entity "question" {
-  + id : INTEGER <<PK>> <<generated>>
+  + id : INTEGER <<PK>> <<FK>>
   --
   name : VARCHAR(255) <<NN>>
-  id_answer : INTEGER <<NN>> <<FK>>
+  id_answer : INTEGER <<FK>>
   grade : INTEGER
   picture : BYTEA
   duration : INTEGER
@@ -56,39 +56,14 @@ entity "question" {
 }
 
 entity "choice" {
-  + id : INTEGER <<PK>> <<generated>>
+  + id : INTEGER <<PK>>
   --
   content : VARCHAR(255) <<NN>>
   id_question : INTEGER <<NN>> <<FK>>
 }
 
-entity "nn_quiz_question" {
-  + id_quiz : INTEGER <<PK>> <<FK>> <<generated>>
-  + id_question : INTEGER <<PK>> <<FK>>
-}
-
-entity "label" {
-  + id : INTEGER <<PK>> <<generated>>
-  --
-  nom : VARCHAR(255) <<NN>>
-}
-
-entity "nn_label_labelisable" {
-  + id_label : INTEGER <<PK>> <<FK>> <<generated>>
-  + id_labelisable : INTEGER <<PK>> <<FK>>
-}
-
-entity "participation" {
-  + id : INTEGER <<PK>> <<generated>>
-  --
-  id_session : INTEGER <<NN>> <<FK>>
-  id_user : INTEGER <<NN>> <<FK>>
-  datetime : TIMESTAMP <<NN>> <<default now()>>
-  score : INTEGER
-}
-
 entity "answers" {
-  + id : INTEGER <<PK>> <<generated>>
+  + id : INTEGER <<PK>>
   --
   id_participation : INTEGER <<NN>> <<FK>>
   id_question : INTEGER <<NN>> <<FK>>
@@ -96,15 +71,36 @@ entity "answers" {
   duration : INTEGER
 }
 
+entity "comment" {
+  + id_creator : INTEGER <<PK>> <<FK>>
+  + id_quiz : INTEGER <<PK>> <<FK>>
+  --
+  message : VARCHAR(255) <<NN>>
+  datetime : TIMESTAMP <<NN>>
+}
+
 entity "friend_request" {
-  + id_requestor : INTEGER <<PK>> <<FK>> <<generated>>
+  + id_requestor : INTEGER <<PK>> <<FK>>
   + id_validator : INTEGER <<PK>> <<FK>>
   --
   datetime : TIMESTAMP <<NN>> <<default now()>>
 }
 
+entity "grade" {
+  + id_creator : INTEGER <<PK>> <<FK>>
+  + id_labelisable : INTEGER <<PK>> <<FK>>
+  --
+  grade : DOUBLE PRECISION <<NN>> <<default 0>>
+}
+
+entity "label" {
+  + id : INTEGER <<PK>>
+  --
+  nom : VARCHAR(255) <<NN>>
+}
+
 entity "modification_request" {
-  + id_requestor : INTEGER <<PK>> <<FK>> <<generated>>
+  + id_requestor : INTEGER <<PK>> <<FK>>
   + id_creator : INTEGER <<PK>> <<FK>>
   + id_question : INTEGER <<PK>> <<FK>>
   --
@@ -112,50 +108,59 @@ entity "modification_request" {
   status : BOOLEAN <<NN>> <<default false>>
 }
 
-entity "comment" {
-  + id_creator : INTEGER <<PK>> <<FK>> <<generated>>
-  + id_quiz : INTEGER <<PK>> <<FK>>
-  --
-  message : VARCHAR(255) <<NN>>
-  datetime : TIMESTAMP <<NN>>
-}
-
-entity "grade" {
-  + id_creator : INTEGER <<PK>> <<FK>> <<generated>>
+entity "nn_label_labelisable" {
+  + id_label : INTEGER <<PK>> <<FK>>
   + id_labelisable : INTEGER <<PK>> <<FK>>
-  --
-  grade : DOUBLE PRECISION <<NN>> <<default 0>>
 }
 
-"user"                       ||--o{ "amis"                : "id_requestor"
-"user"                       ||--o{ "amis"                : "id_validator"
-"user"                       ||--o{ "game_request"        : "id_requestor"
-"user"                       ||--o{ "game_request"        : "id_validator"
-"session"                    ||--o{ "game_request"        : "id_session"
-"user"                       ||--o{ "quiz"                : "id_creator"
-"quiz"                       ||--o{ "session"             : "id_quiz"
-"quiz"                       }|--|| "labelisable"         : "id"
-"user"                       ||--o{ "question"            : "id_creator"
-"choice"                     }|--o| "question"            : "id_answer"
-"question"                   ||--o{ "choice"              : "id_question"
-"labelisable"                }|--|| "question"            : "id"
-"question"                   ||--o{ "nn_quiz_question"    : "id_question"
-"quiz"                       ||--o{ "nn_quiz_question"    : "id_quiz"
-"label"                      ||--o{ "nn_label_labelisable": "id_label"
-"labelisable"                ||--o{ "nn_label_labelisable": "id_labelisable"
-"user"                       ||--o{ "participation"       : "id_user"
-"session"                    ||--o{ "participation"       : "id_session"
-"participation"              ||--o{ "answers"             : "id_participation"
-"question"                   ||--o{ "answers"             : "id_question"
-"choice"                     ||--o{ "answers"             : "id_decision"
-"user"                       ||--o{ "friend_request"      : "id_requestor"
-"user"                       ||--o{ "friend_request"      : "id_validator"
-"question"                   ||--o{ "modification_request": "id_question"
-"user"                       ||--o{ "modification_request": "id_creator"
-"user"                       ||--o{ "modification_request": "id_requestor"
-"user"                       ||--o{ "comment"             : "id_creator"
-"quiz"                       ||--o{ "comment"             : "id_quiz"
-"user"                       ||--o{ "grade"               : "id_creator"
-"labelisable"                ||--o{ "grade"               : "id_labelisable"
+entity "nn_quiz_question" {
+  + id_quiz : INTEGER <<PK>> <<FK>>
+  + id_question : INTEGER <<PK>> <<FK>>
+}
+
+entity "participation" {
+  + id : INTEGER <<PK>>
+  --
+  id_session : INTEGER <<NN>> <<FK>>
+  id_user : INTEGER <<NN>> <<FK>>
+  datetime : TIMESTAMP <<NN>> <<default now()>>
+  score : INTEGER
+}
+
+' Relationships
+user --o| amis : id_requestor
+user --o| amis : id_validator
+user --o| game_request : id_requestor
+user --o| game_request : id_validator
+user --o| comment : id_creator
+user --o| friend_request : id_requestor
+user --o| friend_request : id_validator
+user --o| grade : id_creator
+user --o| question : id_creator
+user --o| quiz : id_creator
+user --o| modification_request : id_requestor
+user --o| modification_request : id_creator
+user --o| participation : id_user
+
+session --o| game_request : id_session
+session --o| participation : id_session
+quiz --o| session : id_quiz
+quiz --o| comment : id_quiz
+quiz --o| nn_quiz_question : id_quiz
+labelisable --o| quiz : id
+labelisable --o| question : id
+labelisable --o| grade : id_labelisable
+labelisable --o| nn_label_labelisable : id_labelisable
+
+question --o| choice : id_question
+question --o| answers : id_question
+question --o| modification_request : id_question
+question --o| nn_quiz_question : id_question
+choice --o| answers : id_decision
+choice --o| question : id_answer
+
+participation --o| answers : id_participation
+
+label --o| nn_label_labelisable : id_label
 
 @enduml
