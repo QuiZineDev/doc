@@ -8,6 +8,7 @@
 
 ### Matinée
 - Implémentation d'un Supabase pour la gestion de la base de données, authentification et stockage
+- Backend : Installation des environnements de développement et choix des technologies
 - Création d'un projet TypeScript pour le backend avec Express et connexion à Supabase
 - Avancement du template Angular pour le frontend
 - Développement infrastructure et déploiement, mise en place de la chaîne GitHub Actions, SSH et Docker Compose
